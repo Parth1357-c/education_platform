@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | CS WITH HIMANSHU GOYAL</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dark-mode.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #050508 0%, #0a0a15 50%, #0f0f1a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2;
+            animation: gridPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes gridPulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 245, 212, 0.15), transparent);
+            top: -150px;
+            left: -150px;
+        }
+
+        .orb-2 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(155, 93, 229, 0.12), transparent);
+            bottom: -100px;
+            right: -100px;
+            animation-delay: -7s;
+        }
+
+        @keyframes orbFloat {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            25% {
+                transform: translate(50px, -30px) scale(1.1);
+            }
+
+            50% {
+                transform: translate(-30px, 50px) scale(0.9);
+            }
+
+            75% {
+                transform: translate(20px, 20px) scale(1.05);
+            }
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* Form Container */
+        .form-wrapper {
+            background: rgba(15, 15, 25, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            border-radius: 24px;
+            padding: 2rem;
+            width: 450px;
+            max-width: 90%;
+            margin-bottom: 2rem;
+        }
+
+        /* Toggle Buttons */
+        .toggle-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.3);
+            padding-bottom: 1rem;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 0.8rem;
+            background: transparent;
+            border: none;
+            color: #8a8a9a;
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.2), rgba(155, 93, 229, 0.2));
+            color: #00f5d4;
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.2);
+        }
+
+        /* Forms */
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeSlide 0.4s ease;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Input Groups */
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            color: #00f5d4;
+            margin-bottom: 0.5rem;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-family: 'Rajdhani', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #00f5d4;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);
+        }
+
+        .input-group input::placeholder {
+            color: #4a4a5a;
+        }
+
+        /* Bulb Section - The Pull to Login */
+        .bulb-section {
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            margin-top: 1rem;
+        }
+
+        .bulb {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at 30% 30%, #3a3a4a, #1a1a2a);
+            border-radius: 50%;
+            position: relative;
+            margin: 0 auto;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.1);
+            cursor: pointer;
+        }
+
+        .bulb::before {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 15px;
+            background: #2a2a3a;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .bulb::after {
+            content: "💡";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 38px;
+            opacity: 0.4;
+            transition: all 0.4s ease;
+        }
+
+        .bulb.glow {
+            background: radial-gradient(circle at 30% 30%, #00f5d4, #00bbf9);
+            box-shadow: 0 0 50px rgba(0, 245, 212, 0.8);
+        }
+
+        .bulb.glow::after {
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(0, 245, 212, 0.5);
+        }
+
+        .pull-string {
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(180deg, #8a8a9a, #5a5a6a);
+            margin: 5px auto 0;
+            position: relative;
+            transition: height 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pull-string::before {
+            content: "▼";
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #8a8a9a;
+            font-size: 10px;
+        }
+
+        .pull-string.pulled {
+            height: 70px;
+            animation: stringPullAnim 0.3s ease-out;
+        }
+
+        @keyframes stringPullAnim {
+            0% {
+                height: 40px;
+            }
+
+            50% {
+                height: 80px;
+            }
+
+            100% {
+                height: 70px;
+            }
+        }
+
+        .bulb-text {
+            margin-top: 15px;
+            color: #8a8a9a;
+            font-size: 12px;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+
+        .bulb-text.active {
+            color: #00f5d4;
+            text-shadow: 0 0 10px rgba(0, 245, 212, 0.5);
+        }
+
+        /* Submit Button (Hidden - replaced by bulb pull) */
+        .hidden-submit {
+            display: none;
+        }
+
+        /* Messages */
+        .error-msg {
+            color: #ff006e;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        /* Loading & Transition */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050508;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s;
+        }
+
+        .loading.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 245, 212, 0.3);
+            border-top-color: #00f5d4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #00f5d4, #9b5de5);
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .page-transition.active {
+            transform: translateX(0);
+        }
+
+        /* Instruction */
+        .instruction {
+            text-align: center;
+            margin-top: 1rem;
+            color: #5a5a6a;
+            font-size: 0.8rem;
+        }
+        /* Light Mode Styles */
+        body.light-mode {
+            background: #f5f5f7;
+            color: #1a1a2e;
+        }
+
+        body.light-mode .filter-section,
+        body.light-mode .question-card,
+        body.light-mode .response-card,
+        body.light-mode .profile-card,
+        body.light-mode .stat-card,
+        body.light-mode .recent-card,
+        body.light-mode .upgrade-card,
+        body.light-mode .form-wrapper {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode input,
+        body.light-mode select,
+        body.light-mode textarea {
+            background: rgba(240, 240, 245, 0.9);
+            color: #1a1a2e;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode nav {
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom-color: #00bbf9;
+        }
+
+        body.light-mode .stat-number {
+            color: #00bbf9;
+        }
+
+        body.light-mode .info-label {
+            color: #00bbf9;
+        }
+
+        body.light-mode h1 {
+            background: linear-gradient(135deg, #00bbf9, #9b5de5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.light-mode .logo {
+            background: linear-gradient(135deg, #00bbf9, #00f5d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="loading" id="loading">
+        <div class="loader"></div>
+    </div>
+
+    <div class="page-transition" id="pageTransition"></div>
+
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-wrapper">
+            <div class="toggle-section">
+                <button class="toggle-btn active" data-form="login">🔐 LOGIN</button>
+                <button class="toggle-btn" data-form="register">📝 SIGN UP</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form active">
+                <div class="input-group">
+                    <label>USERNAME</label>
+                    <input type="text" id="loginUsername" placeholder="Enter your username">
+                </div>
+                <div class="input-group">
+                    <label>PASSWORD</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password">
+                </div>
+                <div class="error-msg" id="loginError"></div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-form">
+                <div class="input-group">
+                    <label>USERNAME</label>
+                    <input type="text" id="regUsername" placeholder="Choose a username">
+                </div>
+                <div class="input-group">
+                    <label>EMAIL</label>
+                    <input type="email" id="regEmail" placeholder="your@email.com">
+                </div>
+                <div class="input-group">
+                    <label>PASSWORD</label>
+                    <input type="password" id="regPassword" placeholder="Create a password">
+                </div>
+                <div class="input-group">
+                    <label>CONFIRM PASSWORD</label>
+                    <input type="password" id="regConfirmPassword" placeholder="Confirm your password">
+                </div>
+                <div class="error-msg" id="registerError"></div>
+            </div>
+        </div>
+
+        <!-- Bulb Section - PULL TO SUBMIT -->
+        <div class="bulb-section" id="bulbSection">
+            <div class="bulb" id="bulb"></div>
+            <div class="pull-string" id="pullString"></div>
+            <div class="bulb-text" id="bulbText">▼ FILL FORM THEN PULL THE STRING ▼</div>
+            <div class="instruction">⚡ Pull the string after filling your details ⚡</div>
+        </div>
+    </div>
+
+    <script>
+        // Elements
+        const bulb = document.getElementById('bulb');
+        const pullString = document.getElementById('pullString');
+        const bulbSection = document.getElementById('bulbSection');
+        const bulbText = document.getElementById('bulbText');
+        const loading = document.getElementById('loading');
+        const pageTransition = document.getElementById('pageTransition');
+
+        let currentForm = 'login';
+
+        // Toggle between Login and Register
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                currentForm = btn.dataset.form;
+                document.getElementById('loginForm').classList.remove('active');
+                document.getElementById('registerForm').classList.remove('active');
+                document.getElementById(`${currentForm}Form`).classList.add('active');
+            });
+        });
+
+        // CSRF Token Helper
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Show validation error
+        function showError(elementId, message) {
+            const errorDiv = document.getElementById(elementId);
+            errorDiv.style.display = 'block';
+            errorDiv.innerHTML = '❌ ' + message;
+            setTimeout(() => { errorDiv.style.display = 'none'; }, 3000);
+        }
+
+        // Handle Login
+        async function submitLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                showError('loginError', 'Please fill all fields');
+                return false;
+            }
+
+            loading.classList.add('active');
+
+            try {
+                const response = await fetch('/api/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                loading.classList.remove('active');
+
+                if (data.success) {
+                    pageTransition.classList.add('active');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 500);
+                    return true;
+                } else {
+                    showError('loginError', data.error || 'Invalid credentials');
+                    return false;
+                }
+            } catch (err) {
+                loading.classList.remove('active');
+                showError('loginError', 'Network error. Please try again.');
+                return false;
+            }
+        }
+
+        // Handle Register
+        async function submitRegister() {
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirmPassword').value;
+
+            if (!username || !email || !password) {
+                showError('registerError', 'Please fill all fields');
+                return false;
+            }
+
+            if (password !== confirm) {
+                showError('registerError', 'Passwords do not match');
+                return false;
+            }
+
+            loading.classList.add('active');
+
+            try {
+                const response = await fetch('/api/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await response.json();
+                loading.classList.remove('active');
+
+                if (data.success) {
+                    pageTransition.classList.add('active');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 500);
+                    return true;
+                } else {
+                    showError('registerError', data.error || 'Registration failed');
+                    return false;
+                }
+            } catch (err) {
+                loading.classList.remove('active');
+                showError('registerError', 'Network error. Please try again.');
+                return false;
+            }
+        }
+
+        // Pull String Animation & Submit
+        let isProcessing = false;
+
+        async function pullAndSubmit() {
+            if (isProcessing) return;
+
+            // Animate string pull
+            pullString.classList.add('pulled');
+
+            // Glow bulb
+            bulb.classList.add('glow');
+            bulbText.classList.add('active');
+            bulbText.innerHTML = '✨ PROCESSING YOUR REQUEST... ✨';
+
+            // Scale animation
+            gsap.to(bulb, {
+                scale: 1.2,
+                duration: 0.2,
+                yoyo: true,
+                repeat: 1
+            });
+
+            isProcessing = true;
+
+            // Wait for animation
+            await new Promise(resolve => setTimeout(resolve, 400));
+
+            // Submit based on current form
+            let success = false;
+            if (currentForm === 'login') {
+                success = await submitLogin();
+            } else {
+                success = await submitRegister();
+            }
+
+            // Reset if not success
+            if (!success) {
+                pullString.classList.remove('pulled');
+                bulb.classList.remove('glow');
+                bulbText.classList.remove('active');
+                bulbText.innerHTML = '▼ FILL FORM THEN PULL THE STRING ▼';
+                isProcessing = false;
+            }
+        }
+
+        // Click on bulb or pull string triggers submit
+        bulbSection.addEventListener('click', pullAndSubmit);
+
+        // Also allow Enter key to submit via bulb pull
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                pullAndSubmit();
+            }
+        });
+
+        // Initial Animation
+        gsap.from('.form-wrapper', {
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power3.out'
+        });
+
+        gsap.from('.bulb-section', {
+            scale: 0,
+            opacity: 0,
+            duration: 1,
+            ease: 'back.out(0.5)',
+            delay: 0.3
+        });
+    </script>
+    <script>
+    // Dark Mode Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        // Check saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeToggle.textContent = '☀️';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = '☀️';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = '🌙';
+            }
+        });
+    }
+</script>
+</body>
+
+</html>

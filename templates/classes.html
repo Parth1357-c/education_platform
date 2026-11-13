@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classes | CS WITH HIMANSHU GOYAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 3rem;
+            background: rgba(10,10,10,0.9);
+            border-bottom: 1px solid #00f5d4;
+        }
+        
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #00f5d4, #00bbf9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: #8a8a9a;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover, .nav-links a.active { color: #00f5d4; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #00f5d4, #9b5de5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle { color: #8a8a9a; }
+        
+        /* ✅ BIG, VISIBLE BUTTON */
+        .create-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #00f5d4, #00bbf9);
+            border: none;
+            border-radius: 12px;
+            color: #0a0a0a;
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+            box-shadow: 0 0 30px rgba(0, 245, 212, 0.3);
+        }
+        
+        .create-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 50px rgba(0, 245, 212, 0.5);
+        }
+        
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2rem;
+        }
+        
+        .class-card {
+            background: rgba(20,20,30,0.6);
+            border: 1px solid rgba(0,245,212,0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .class-card:hover {
+            transform: translateY(-5px);
+            border-color: #00f5d4;
+        }
+        
+        .class-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .status-upcoming { background: rgba(0,245,212,0.2); color: #00f5d4; }
+        .status-ongoing { background: rgba(255,170,0,0.2); color: #ffaa00; }
+        .status-completed { background: rgba(0,255,0,0.2); color: #00ff00; }
+        .status-cancelled { background: rgba(255,0,0,0.2); color: #ff4444; }
+        
+        .class-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3rem;
+            margin: 0.8rem 0;
+        }
+        
+        .class-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: #8a8a9a;
+        }
+        
+        .class-meta span { display: flex; align-items: center; gap: 0.3rem; }
+        .class-desc { color: #8a8a9a; margin: 0.8rem 0; line-height: 1.6; }
+        
+        .class-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0,245,212,0.1);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .enroll-count { font-size: 0.8rem; color: #666; }
+        .enroll-count strong { color: #00f5d4; }
+        
+        .join-btn {
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            border: 1px solid #00f5d4;
+            background: transparent;
+            color: #00f5d4;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        
+        .join-btn:hover {
+            background: rgba(0,245,212,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            color: #666;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-state .icon { font-size: 4rem; display: block; margin-bottom: 1rem; }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #00f5d4;
+            margin-top: 3rem;
+            color: #8a8a9a;
+        }
+        
+        @media (max-width: 768px) {
+            nav { padding: 1rem; }
+            .nav-links { gap: 1rem; }
+            .container { padding: 0 1rem; }
+            .classes-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">◈ CS WITH HIMANSHU GOYAL</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/library/">Library</a></li>
+            <li><a href="/ask/">Ask Core-Sage</a></li>
+            <li><a href="/history/">My Doubts</a></li>
+            <li><a href="/dashboard/">Dashboard</a></li>
+            <li><a href="/classes/" class="active">📅 Classes</a></li>
+            <li><a href="/logout/">Logout</a></li>
+            <li><a href="/python-interpreter/">🐍 Python</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>📅 Live Classes</h1>
+                <p class="subtitle">Join scheduled sessions with your teachers</p>
+            </div>
+            
+            <!-- ✅ THIS IS THE BUTTON - IT WILL SHOW FOR ADMINS -->
+            {% if user.is_staff %}
+            <a href="/schedule-class/" class="create-btn">➕ Schedule New Class</a>
+            {% else %}
+            <span style="color: #ff006e; font-size: 0.8rem;">Login as teacher to schedule</span>
+            {% endif %}
+        </div>
+
+        <div class="classes-grid">
+            {% for class in classes %}
+            <div class="class-card">
+                <span class="class-status status-{{ class.status|lower }}">
+                    {% if class.status == 'UPCOMING' %}📅 Upcoming
+                    {% elif class.status == 'ONGOING' %}🔄 Ongoing
+                    {% elif class.status == 'COMPLETED' %}✅ Completed
+                    {% else %}❌ Cancelled{% endif %}
+                </span>
+                <h3 class="class-title">{{ class.title }}</h3>
+                <div class="class-meta">
+                    <span>👨‍🏫 {{ class.teacher.username }}</span>
+                    <span>📅 {{ class.date|date:"M d, Y" }}</span>
+                    <span>🕐 {{ class.start_time|time:"h:i A" }} - {{ class.end_time|time:"h:i A" }}</span>
+                </div>
+                <p class="class-desc">{{ class.description|default:"No description provided." }}</p>
+                <div class="class-footer">
+                    <span class="enroll-count">
+                        👥 <strong>{{ class.get_enrolled_count }}</strong> / {{ class.max_students }} enrolled
+                    </span>
+                    {% if class.status == 'UPCOMING' or class.status == 'ONGOING' %}
+                        {% if class.is_full %}
+                            <span class="join-btn full">🔴 Class Full</span>
+                        {% elif user in class.enrolled_students.all %}
+                            <a href="{{ class.meeting_link|default:'#' }}" target="_blank" class="join-btn enrolled">✅ Join Class</a>
+                        {% else %}
+                            <button class="join-btn" onclick="enrollClass({{ class.id }})">🎯 Enroll Now</button>
+                        {% endif %}
+                    {% elif class.status == 'COMPLETED' %}
+                        <span style="color: #666;">✅ Class Completed</span>
+                    {% else %}
+                        <span style="color: #ff4444;">❌ Cancelled</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <span class="icon">📭</span>
+                <h3>No classes scheduled yet</h3>
+                <p>Check back later for upcoming sessions.</p>
+                {% if user.is_staff %}
+                <p style="margin-top: 1rem; color: #00f5d4;">
+                    <a href="/schedule-class/" style="color: #00f5d4; text-decoration: underline;">Click here to schedule a new class →</a>
+                </p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer>
+        <p>CS WITH HIMANSHU GOYAL | CBSE Class 11 & 12 | Live Classes</p>
+    </footer>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        async function enrollClass(classId) {
+            try {
+                const response = await fetch(`/api/enroll-class/${classId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert(data.error || 'Failed to enroll');
+                }
+            } catch (error) {
+                alert('Network error. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

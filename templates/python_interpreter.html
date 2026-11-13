@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Interpreter</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #00f5d4;
+            margin-bottom: 1rem;
+        }
+        .card {
+            background: #1a1a2e;
+            border: 1px solid #00f5d4;
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #00f5d4;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            padding: 1rem;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #00f5d4;
+        }
+
+        /* ✅ BUTTONS - PLAIN AND VISIBLE */
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-run {
+            background: #00f5d4;
+            color: #000000;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .btn-run:hover {
+            background: #00d4b8;
+        }
+
+        .btn-clear {
+            background: #ff006e;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .btn-clear:hover {
+            background: #cc0058;
+        }
+
+        .btn-sample {
+            background: #9b5de5;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .btn-sample:hover {
+            background: #7a3db8;
+        }
+
+        .output {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            margin: 1rem 0;
+        }
+
+        .examples {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .example {
+            background: rgba(0, 245, 212, 0.1);
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            border-radius: 20px;
+            padding: 0.4rem 1rem;
+            color: #00f5d4;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .example:hover {
+            background: rgba(0, 245, 212, 0.2);
+        }
+
+        .loading {
+            color: #00f5d4;
+            margin: 1rem 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐍 Python Interpreter</h1>
+        <p style="text-align: center; color: #888; margin-bottom: 1.5rem;">Write Python code and run it in your browser!</p>
+
+        <div class="card">
+            <textarea id="code" rows="10">print("Hello, World!")</textarea>
+
+            <!-- ✅ BUTTONS - SIMPLE AND VISIBLE -->
+            <div class="buttons">
+                <button class="btn-run" id="runBtn">▶ RUN CODE</button>
+                <button class="btn-clear" id="clearBtn">🗑️ Clear Output</button>
+                <button class="btn-sample" id="sampleBtn">📋 Load Sample</button>
+            </div>
+
+            <div class="loading" id="loading">⏳ Loading Python...</div>
+
+            <div class="output" id="output">💡 Write code and click "RUN CODE"</div>
+
+            <div class="examples">
+                <span class="example" data-code='print("Hello, World!")'>Hello World</span>
+                <span class="example" data-code='name = input("Enter name: ")\nprint(f"Hello, {name}!")'>Input</span>
+                <span class="example" data-code='for i in range(5):\n    print(i)'>For Loop</span>
+                <span class="example" data-code='def square(x):\n    return x * x\n\nprint(square(5))'>Function</span>
+                <span class="example" data-code='fruits = ["apple", "banana", "cherry"]\nfor fruit in fruits:\n    print(fruit)'>List</span>
+            </div>
+        </div>
+
+        <footer>CS WITH HIMANSHU GOYAL | CBSE Class 11 & 12</footer>
+    </div>
+
+    <script>
+        // ============================================================
+        // LOAD PYODIDE
+        // ============================================================
+        let pyodide = null;
+        let isReady = false;
+        const output = document.getElementById('output');
+        const loading = document.getElementById('loading');
+
+        loading.textContent = '⏳ Loading Python interpreter... Please wait...';
+
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js';
+        script.onload = async function() {
+            try {
+                loading.textContent = '⏳ Initializing Python...';
+                pyodide = await loadPyodide({
+                    indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.1/full/'
+                });
+                isReady = true;
+                loading.textContent = '✅ Python ready!';
+                output.innerHTML = '💡 Write code and click "RUN CODE"';
+                console.log('✅ Pyodide loaded!');
+            } catch (error) {
+                loading.textContent = '❌ Error: ' + error.message;
+                output.innerHTML = '❌ Failed to load Python: ' + error.message;
+            }
+        };
+        script.onerror = function() {
+            loading.textContent = '❌ Failed to load Python. Check internet connection.';
+            output.innerHTML = '❌ Failed to load Python interpreter. Please check your internet connection.';
+        };
+        document.head.appendChild(script);
+
+        // ============================================================
+        // RUN CODE
+        // ============================================================
+        async function runCode() {
+            if (!isReady) {
+                output.innerHTML = '❌ Python is still loading. Please wait...';
+                return;
+            }
+
+            const code = document.getElementById('code').value;
+            if (!code.trim()) {
+                output.innerHTML = '❌ Please write some code first!';
+                return;
+            }
+
+            output.innerHTML = '⏳ Running...';
+
+            try {
+                pyodide.runPython(`
+                    import sys
+                    from io import StringIO
+                    sys.stdout = StringIO()
+                `);
+
+                pyodide.runPython(code);
+                const result = pyodide.runPython('sys.stdout.getvalue()');
+
+                if (result) {
+                    output.innerHTML = result;
+                } else {
+                    output.innerHTML = '✅ Code executed successfully! (No output)';
+                }
+            } catch (error) {
+                output.innerHTML = '❌ Error: ' + error.message;
+            }
+        }
+
+        // ============================================================
+        // CLEAR OUTPUT
+        // ============================================================
+        function clearOutput() {
+            output.innerHTML = '💡 Output cleared. Run your code again!';
+        }
+
+        // ============================================================
+        // LOAD SAMPLE
+        // ============================================================
+        function loadSample() {
+            document.getElementById('code').value = `# Python Sample Code
+
+print("Hello, World!")
+
+name = "Alice"
+age = 25
+print(f"Name: {name}, Age: {age}")
+
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(f"- {fruit}")
+
+def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("World"))`;
+            output.innerHTML = '📋 Sample code loaded! Click "RUN CODE" to execute.';
+        }
+
+        // ============================================================
+        // EVENT LISTENERS
+        // ============================================================
+        document.getElementById('runBtn').addEventListener('click', runCode);
+        document.getElementById('clearBtn').addEventListener('click', clearOutput);
+        document.getElementById('sampleBtn').addEventListener('click', loadSample);
+
+        // Ctrl+Enter
+        document.getElementById('code').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                runCode();
+            }
+        });
+
+        // Tab support
+        document.getElementById('code').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+
+        // Example tags
+        document.querySelectorAll('.example').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.getElementById('code').value = this.dataset.code;
+                output.innerHTML = '📋 Example loaded! Click "RUN CODE" to execute.';
+            });
+        });
+    </script>
+</body>
+</html>

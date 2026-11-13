@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS WITH HIMANSHU GOYAL | Home</title>
+    <link rel="stylesheet" href="/static/css/dark-mode.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 3rem;
+            background: rgba(10, 10, 10, 0.9);
+            border-bottom: 1px solid #00f5d4;
+            position: sticky;
+            top: 0;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00f5d4, #00bbf9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #8a8a9a;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #00f5d4;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00f5d4, #9b5de5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: #8a8a9a;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border: 2px solid #00f5d4;
+            color: #00f5d4;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: rgba(0, 245, 212, 0.1);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #00f5d4;
+            margin-top: 3rem;
+            color: #8a8a9a;
+        }
+        /* Light Mode Styles */
+        body.light-mode {
+            background: #f5f5f7;
+            color: #1a1a2e;
+        }
+
+        body.light-mode .filter-section,
+        body.light-mode .question-card,
+        body.light-mode .response-card,
+        body.light-mode .profile-card,
+        body.light-mode .stat-card,
+        body.light-mode .recent-card,
+        body.light-mode .upgrade-card,
+        body.light-mode .form-wrapper {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode input,
+        body.light-mode select,
+        body.light-mode textarea {
+            background: rgba(240, 240, 245, 0.9);
+            color: #1a1a2e;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode nav {
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom-color: #00bbf9;
+        }
+
+        body.light-mode .stat-number {
+            color: #00bbf9;
+        }
+
+        body.light-mode .info-label {
+            color: #00bbf9;
+        }
+
+        body.light-mode h1 {
+            background: linear-gradient(135deg, #00bbf9, #9b5de5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.light-mode .logo {
+            background: linear-gradient(135deg, #00bbf9, #00f5d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">◈ CS WITH HIMANSHU GOYAL</div>
+        <ul class="nav-links">
+             <li><a href="/">Home</a></li>
+             <li><a href="/library/">Library</a></li>
+             <li><a href="/ask/">Ask Core-Sage</a></li>
+             <li><a href="/history/">My Doubts</a></li>
+             <li><a href="/dashboard/">Dashboard</a></li>
+             <li><a href="/upgrade/">Upgrade</a></li>
+             <li><a href="/admin/">Admin</a></li>
+             <li><a href="/logout/">Logout</a></li>
+            <li><button id="themeToggle" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">🌙</button></li>
+            {% if user.is_staff %}
+            <li><a href="/teacher/inbox/">📬 Teacher Inbox</a></li>
+            {% endif %}
+            <li><a href="/classes/">📅 Classes</a></li>
+            <li><a href="/python-interpreter/">🐍 Python</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <h1>Master Computer Science & IP</h1>
+        <p>Access comprehensive notes and AI-powered doubt solving for Class 11 & 12 CBSE</p>
+        <a href="/library/" class="btn">Explore Library →</a>
+    </section>
+
+    <footer>
+        <p>CS WITH HIMANSHU GOYAL | CBSE Class 11 & 12</p>
+    </footer>
+    <script>
+    // Dark Mode Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        // Check saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeToggle.textContent = '☀️';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = '☀️';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = '🌙';
+            }
+        });
+    }
+</script>
+</body>
+
+</html>

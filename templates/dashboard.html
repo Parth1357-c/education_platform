@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | CS WITH HIMANSHU GOYAL</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dark-mode.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #050508 0%, #0a0a15 50%, #0f0f1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            pointer-events: none;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        .orb-1 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0, 245, 212, 0.15), transparent); top: -150px; left: -150px; }
+        .orb-2 { width: 350px; height: 350px; background: radial-gradient(circle, rgba(155, 93, 229, 0.12), transparent); bottom: -100px; right: -100px; animation-delay: -7s; }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -30px) scale(1.1); }
+            50% { transform: translate(-30px, 50px) scale(0.9); }
+            75% { transform: translate(20px, 20px) scale(1.05); }
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 3rem;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #00f5d4;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #00f5d4, #00bbf9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #8a8a9a;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #00f5d4;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #00f5d4, #9b5de5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .edit-btn {
+            padding: 0.6rem 1.2rem;
+            background: transparent;
+            border: 1px solid #00f5d4;
+            border-radius: 8px;
+            color: #00f5d4;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            transition: all 0.3s;
+        }
+
+        .edit-btn:hover {
+            background: rgba(0, 245, 212, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 212, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #00f5d4;
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00f5d4;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .stat-label {
+            color: #8a8a9a;
+            margin-top: 0.5rem;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 212, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #00f5d4, #9b5de5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        .profile-info h2 {
+            font-family: 'Orbitron', monospace;
+            margin-bottom: 0.3rem;
+        }
+
+        .tier-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .tier-premium {
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.2), rgba(155, 93, 229, 0.2));
+            color: #00f5d4;
+        }
+
+        .tier-free {
+            background: rgba(139, 139, 154, 0.2);
+            color: #8a8a9a;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.1);
+        }
+
+        .info-label {
+            width: 120px;
+            color: #00f5d4;
+            font-weight: bold;
+        }
+
+        .info-value {
+            flex: 1;
+            color: #e0e0e0;
+        }
+
+        /* Recent Activity */
+        .recent-card {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 212, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.3);
+        }
+
+        .activity-item {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .activity-question {
+            color: #e0e0e0;
+            flex: 1;
+        }
+
+        .activity-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .activity-status {
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+
+        .status-resolved { background: rgba(0, 255, 0, 0.2); color: #00ff00; }
+        .status-pending { background: rgba(255, 170, 0, 0.2); color: #ffaa00; }
+
+        .view-all {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #00f5d4;
+            text-decoration: none;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(15, 15, 25, 0.95);
+            border: 1px solid #00f5d4;
+            border-radius: 24px;
+            padding: 2rem;
+            width: 450px;
+            max-width: 90%;
+        }
+
+        .modal-content h3 {
+            font-family: 'Orbitron', monospace;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-buttons button {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #00f5d4, #9b5de5);
+            color: #0a0a0a;
+            font-weight: bold;
+        }
+
+        .cancel-btn {
+            background: transparent;
+            border: 1px solid #ff006e !important;
+            color: #ff006e;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #00f5d4;
+            margin-top: 3rem;
+            color: #8a8a9a;
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 1rem; }
+            .nav-links { gap: 1rem; }
+            .container { padding: 0 1rem; }
+            .info-row { flex-direction: column; }
+            .info-label { width: 100%; margin-bottom: 0.3rem; }
+        }
+        /* Light Mode Styles */
+        body.light-mode {
+            background: #f5f5f7;
+            color: #1a1a2e;
+        }
+
+        body.light-mode .filter-section,
+        body.light-mode .question-card,
+        body.light-mode .response-card,
+        body.light-mode .profile-card,
+        body.light-mode .stat-card,
+        body.light-mode .recent-card,
+        body.light-mode .upgrade-card,
+        body.light-mode .form-wrapper {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode input,
+        body.light-mode select,
+        body.light-mode textarea {
+            background: rgba(240, 240, 245, 0.9);
+            color: #1a1a2e;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode nav {
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom-color: #00bbf9;
+        }
+
+        body.light-mode .stat-number {
+            color: #00bbf9;
+        }
+
+        body.light-mode .info-label {
+            color: #00bbf9;
+        }
+
+        body.light-mode h1 {
+            background: linear-gradient(135deg, #00bbf9, #9b5de5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.light-mode .logo {
+            background: linear-gradient(135deg, #00bbf9, #00f5d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav>
+        <div class="logo">◈ CS WITH HIMANSHU GOYAL</div>
+        <ul class="nav-links">
+             <li><a href="/">Home</a></li>
+            <li><a href="/library/">Library</a></li>
+            <li><a href="/ask/">Ask Core-Sage</a></li>
+            <li><a href="/history/">My Doubts</a></li>
+            <li><a href="/dashboard/" class="active">Dashboard</a></li>
+            <li><a href="/upgrade/">Upgrade</a></li>
+            <li><a href="/admin/">Admin</a></li>
+            <li><a href="/logout/">Logout</a></li>
+            <li><button id="themeToggle" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">🌙</button></li>
+            <li><a href="/classes/">📅 Classes</a></li>
+            <li><a href="/python-interpreter/">🐍 Python</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>⚡ User Dashboard</h1>
+            <button class="edit-btn" id="editProfileBtn">✏️ Edit Profile</button>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_doubts }}</div>
+                <div class="stat-label">Total Doubts Asked</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ resolved_doubts }}</div>
+                <div class="stat-label">Resolved Doubts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ pending_doubts }}</div>
+                <div class="stat-label">Pending Doubts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_chapters_viewed|default:"0" }}</div>
+                <div class="stat-label">Notes Downloaded</div>
+            </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar">👤</div>
+                <div class="profile-info">
+                    <h2>{{ user.username }}</h2>
+                    <span class="tier-badge {% if is_paid %}tier-premium{% else %}tier-free{% endif %}">
+                        {% if is_paid %}⭐ PREMIUM MEMBER{% else %}🆓 FREE USER{% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Email</div>
+                <div class="info-value">{{ user.email }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Member Since</div>
+                <div class="info-value">{{ user.date_joined|date:"F d, Y" }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Last Login</div>
+                <div class="info-value">{{ user.last_login|date:"F d, Y · h:i A" }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Bio</div>
+                <div class="info-value">{{ user_profile.bio|default:"No bio added yet. Click Edit Profile to add one!" }}</div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-card">
+            <h3 class="section-title">📜 Recent Activity</h3>
+            {% for doubt in recent_doubts %}
+            <div class="activity-item">
+                <span class="activity-question">{{ doubt.query|truncatechars:60 }}</span>
+                <span class="activity-date">{{ doubt.created_at|date:"M d, Y" }}</span>
+                <span class="activity-status {% if doubt.is_resolved %}status-resolved{% else %}status-pending{% endif %}">
+                    {% if doubt.is_resolved %}✅ Resolved{% else %}⏳ Pending{% endif %}
+                </span>
+            </div>
+            {% empty %}
+            <div style="text-align: center; padding: 2rem; color: #666;">
+                <p>📭 No doubts asked yet.</p>
+                <a href="/ask/" style="color: #00f5d4;">Ask Core-Sage something →</a>
+            </div>
+            {% endfor %}
+            {% if recent_doubts %}
+            <a href="/history/" class="view-all">View All Activity →</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h3>✏️ Edit Profile</h3>
+            <form id="editProfileForm">
+                {% csrf_token %}
+                <input type="text" id="editUsername" name="username" placeholder="Username" value="{{ user.username }}">
+                <input type="email" id="editEmail" name="email" placeholder="Email" value="{{ user.email }}">
+                <textarea id="editBio" name="bio" rows="4" placeholder="Tell us about yourself...">{{ user_profile.bio }}</textarea>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel-btn" id="closeModalBtn">Cancel</button>
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>CS WITH HIMANSHU GOYAL | CBSE Class 11 & 12 | User Dashboard</p>
+    </footer>
+
+    <script>
+        gsap.from('.stats-grid .stat-card', { opacity: 0, y: 30, duration: 0.5, stagger: 0.1 });
+        gsap.from('.profile-card', { opacity: 0, x: -30, duration: 0.6, delay: 0.2 });
+        gsap.from('.recent-card', { opacity: 0, y: 30, duration: 0.6, delay: 0.4 });
+
+        // Modal functionality
+        const modal = document.getElementById('editModal');
+        const editBtn = document.getElementById('editProfileBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+
+        editBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Form submission
+        document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                username: document.getElementById('editUsername').value,
+                email: document.getElementById('editEmail').value,
+                bio: document.getElementById('editBio').value
+            };
+            
+            try {
+                const response = await fetch('/api/update-profile/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert(data.error || 'Failed to update profile');
+                }
+            } catch (error) {
+                alert('Network error. Please try again.');
+            }
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    <script>
+    // Dark Mode Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        // Check saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeToggle.textContent = '☀️';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = '☀️';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = '🌙';
+            }
+        });
+    }
+</script>
+</body>
+</html>

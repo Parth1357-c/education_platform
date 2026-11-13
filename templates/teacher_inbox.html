@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Uplink | Faculty Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #050508 0%, #0a0a15 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            background: #f5f5f7;
+            color: #1a1a2e;
+        }
+
+        body.light-mode nav {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        body.light-mode .doubt-card,
+        body.light-mode .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .doubt-question {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        body.light-mode .response-input {
+            background: rgba(240, 240, 245, 0.9);
+            color: #1a1a2e;
+        }
+
+        body.light-mode .stat-number {
+            color: #00bbf9;
+        }
+
+        /* Background Effects */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            pointer-events: none;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        .orb-1 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0, 245, 212, 0.15), transparent); top: -150px; left: -150px; }
+        .orb-2 { width: 350px; height: 350px; background: radial-gradient(circle, rgba(255, 0, 110, 0.12), transparent); bottom: -100px; right: -100px; animation-delay: -7s; }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -30px) scale(1.1); }
+            50% { transform: translate(-30px, 50px) scale(0.9); }
+            75% { transform: translate(20px, 20px) scale(1.05); }
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 3rem;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid #ff006e;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #ff006e, #00f5d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #8a8a9a;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff006e;
+        }
+
+        .nav-links button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #ff006e, #9b5de5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #8a8a9a;
+        }
+
+        /* Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 110, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: #ff006e;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff006e;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .stat-label {
+            color: #8a8a9a;
+            margin-top: 0.3rem;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ff006e;
+            display: inline-block;
+            color: #ff006e;
+        }
+
+        /* Doubt Cards */
+        .doubt-card {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 110, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .doubt-card:hover {
+            border-color: #ff006e;
+        }
+
+        .doubt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .student-name {
+            font-weight: bold;
+            color: #ff006e;
+            font-size: 1.1rem;
+        }
+
+        .doubt-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .priority-badge {
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .priority-urgent { background: rgba(255, 0, 0, 0.2); color: #ff4444; }
+        .priority-high { background: rgba(255, 0, 0, 0.15); color: #ff6666; }
+        .priority-normal { background: rgba(0, 255, 0, 0.15); color: #00ff00; }
+        .priority-low { background: rgba(0, 245, 212, 0.15); color: #00f5d4; }
+
+        .doubt-question {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 0.8rem 0;
+            line-height: 1.6;
+        }
+
+        .response-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 0, 110, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            resize: vertical;
+            margin: 0.8rem 0;
+        }
+
+        .response-input:focus {
+            outline: none;
+            border-color: #ff006e;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .status-select {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 0, 110, 0.3);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .respond-btn {
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, #ff006e, #fb5607);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            transition: all 0.3s;
+        }
+
+        .respond-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 0, 110, 0.4);
+        }
+
+        .respond-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .teacher-response {
+            background: rgba(255, 0, 110, 0.1);
+            border-left: 3px solid #ff006e;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-message .icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+
+        .status-pending { background: rgba(255, 170, 0, 0.2); color: #ffaa00; }
+        .status-progress { background: rgba(0, 187, 249, 0.2); color: #00bbf9; }
+        .status-resolved { background: rgba(0, 255, 0, 0.2); color: #00ff00; }
+        .status-escalated { background: rgba(255, 0, 110, 0.2); color: #ff006e; }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #ff006e;
+            margin-top: 3rem;
+            color: #8a8a9a;
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 1rem; }
+            .nav-links { gap: 1rem; }
+            .container { padding: 0 1rem; }
+            .header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav>
+        <div class="logo">◈ COMMAND UPLINK</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/library/">Library</a></li>
+            <li><a href="/ask/">Core-Sage</a></li>
+            <li><a href="/admin/">Admin</a></li>
+            <li><button id="themeToggle">🌙</button></li>
+            <li><a href="/python-interpreter/">🐍 Python</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>📬 Command Uplink</h1>
+                <p class="subtitle">Faculty Dashboard - Manage Student Doubts</p>
+            </div>
+            <span style="color: #ff006e; font-family: 'Orbitron', monospace;">👨‍🏫 {{ user.username }}</span>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_pending }}</div>
+                <div class="stat-label">⏳ Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_in_progress }}</div>
+                <div class="stat-label">🔄 In Progress</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_resolved }}</div>
+                <div class="stat-label">✅ Resolved</div>
+            </div>
+        </div>
+
+        <!-- Pending Doubts -->
+        <div class="section">
+            <h2 class="section-title">⏳ Pending Doubts</h2>
+            {% for inbox in pending_doubts %}
+            <div class="doubt-card" id="doubt-{{ inbox.id }}">
+                <div class="doubt-header">
+                    <span class="student-name">👨‍🎓 {{ inbox.doubt.student.username }}</span>
+                    <span class="priority-badge priority-{% if inbox.doubt.priority == 3 %}urgent{% elif inbox.doubt.priority == 2 %}high{% else %}normal{% endif %}">
+                        {% if inbox.doubt.priority == 3 %}🔴 Urgent{% elif inbox.doubt.priority == 2 %}🟠 High{% else %}🟢 Normal{% endif %}
+                    </span>
+                </div>
+                <div style="font-size: 0.8rem; color: #666; margin-bottom: 0.5rem;">
+                    Asked: {{ inbox.doubt.created_at|date:"M d, Y · h:i A" }}
+                </div>
+                <div class="doubt-question">
+                    <strong>Question:</strong><br>
+                    {{ inbox.doubt.query }}
+                </div>
+                <textarea class="response-input" id="response-{{ inbox.id }}" rows="3" placeholder="Type your response here..."></textarea>
+                <div class="actions">
+                    <select class="status-select" id="status-{{ inbox.id }}">
+                        <option value="PENDING" {% if inbox.status == 'PENDING' %}selected{% endif %}>⏳ Pending</option>
+                        <option value="IN_PROGRESS" {% if inbox.status == 'IN_PROGRESS' %}selected{% endif %}>🔄 In Progress</option>
+                        <option value="RESOLVED" {% if inbox.status == 'RESOLVED' %}selected{% endif %}>✅ Resolved</option>
+                        <option value="ESCALATED" {% if inbox.status == 'ESCALATED' %}selected{% endif %}>⚠️ Escalated</option>
+                    </select>
+                    <button class="respond-btn" onclick="sendResponse({{ inbox.id }})">✈️ Send Response</button>
+                </div>
+                {% if inbox.teacher_notes %}
+                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: #666;">
+                    <strong>Your notes:</strong> {{ inbox.teacher_notes }}
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="empty-message">
+                <span class="icon">✨</span>
+                No pending doubts. Great job!
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- In Progress Doubts -->
+        <div class="section">
+            <h2 class="section-title">🔄 In Progress</h2>
+            {% for inbox in in_progress_doubts %}
+            <div class="doubt-card">
+                <div class="doubt-header">
+                    <span class="student-name">👨‍🎓 {{ inbox.doubt.student.username }}</span>
+                    <span class="status-badge status-progress">🔄 In Progress</span>
+                </div>
+                <div style="font-size: 0.8rem; color: #666; margin-bottom: 0.5rem;">
+                    Asked: {{ inbox.doubt.created_at|date:"M d, Y · h:i A" }}
+                </div>
+                <div class="doubt-question">
+                    <strong>Question:</strong><br>
+                    {{ inbox.doubt.query }}
+                </div>
+                {% if inbox.teacher_notes %}
+                <div style="background: rgba(255, 0, 110, 0.1); padding: 0.5rem; border-radius: 8px; margin: 0.5rem 0;">
+                    <strong>Your notes:</strong> {{ inbox.teacher_notes }}
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="empty-message">
+                <span class="icon">📝</span>
+                No doubts in progress.
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Resolved Doubts -->
+        <div class="section">
+            <h2 class="section-title">✅ Recently Resolved</h2>
+            {% for inbox in resolved_doubts %}
+            <div class="doubt-card">
+                <div class="doubt-header">
+                    <span class="student-name">👨‍🎓 {{ inbox.doubt.student.username }}</span>
+                    <span class="status-badge status-resolved">✅ Resolved</span>
+                </div>
+                <div class="doubt-question">
+                    <strong>Question:</strong> {{ inbox.doubt.query|truncatechars:150 }}
+                </div>
+                {% if inbox.faculty_response %}
+                <div class="teacher-response">
+                    <strong>Your response:</strong> {{ inbox.faculty_response|truncatechars:100 }}
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="empty-message">
+                <span class="icon">📋</span>
+                No resolved doubts yet.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer>
+        <p>CS WITH HIMANSHU GOYAL | Command Uplink - Faculty Dashboard</p>
+    </footer>
+
+    <script>
+        // GSAP Animations
+        gsap.from('.stat-card', { opacity: 0, y: 30, duration: 0.5, stagger: 0.1 });
+        gsap.from('.doubt-card', { opacity: 0, x: -20, duration: 0.5, stagger: 0.1, delay: 0.3 });
+
+        // Dark Mode Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeToggle.textContent = '☀️';
+            }
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                if (document.body.classList.contains('light-mode')) {
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = '☀️';
+                } else {
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = '🌙';
+                }
+            });
+        }
+
+        // Send Response
+        async function sendResponse(inboxId) {
+            const response = document.getElementById(`response-${inboxId}`).value.trim();
+            const status = document.getElementById(`status-${inboxId}`).value;
+            const btn = document.querySelector(`#doubt-${inboxId} .respond-btn`);
+            
+            if (!response) {
+                alert('Please enter a response before sending.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Sending...';
+
+            try {
+                const res = await fetch(`/teacher/respond/${inboxId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ response: response })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    alert('✅ Response sent successfully!');
+                    window.location.reload();
+                } else {
+                    alert('❌ Error: ' + (data.error || 'Something went wrong'));
+                }
+            } catch (error) {
+                alert('❌ Network error. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '✈️ Send Response';
+            }
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

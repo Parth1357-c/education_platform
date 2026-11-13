@@ -1,0 +1,28 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block content %}
+<div id="content-main">
+    <!-- Custom Stats Cards -->
+    <div class="admin-stats">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_chapters|default:"0" }}</div>
+            <div class="stat-label">📚 Total Chapters</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_users|default:"0" }}</div>
+            <div class="stat-label">👥 Total Users</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ paid_users|default:"0" }}</div>
+            <div class="stat-label">⭐ Premium Users</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_doubts|default:"0" }}</div>
+            <div class="stat-label">💬 Doubts Solved</div>
+        </div>
+    </div>
+    
+    {{ block.super }}
+</div>
+{% endblock %}

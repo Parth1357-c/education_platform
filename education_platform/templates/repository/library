@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault | Study Repository</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --neon: #00ffcc;
+            --dark: #0a0a0a;
+            --card-bg: #121212;
+            --border: #222;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: #e0e0e0;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 40px;
+            line-height: 1.6;
+        }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto 40px auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 0;
+            color: white;
+        }
+
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background: var(--neon);
+            margin: 10px 0 30px 0;
+        }
+
+        /* Search Section */
+        .search-container {
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            background: #161616;
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            color: white;
+            border-radius: 5px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--neon);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+        }
+
+        .search-btn {
+            background: transparent;
+            border: 1px solid var(--neon);
+            color: var(--neon);
+            padding: 0 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .search-btn:hover {
+            background: var(--neon);
+            color: var(--dark);
+        }
+
+        /* Filter Navigation */
+        .filter-nav {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .filter-link {
+            text-decoration: none;
+            color: #777;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            padding: 6px 18px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .filter-link:hover {
+            color: var(--neon);
+            border-color: var(--neon);
+        }
+
+        /* Results Info */
+        .results-info {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* The Grid */
+        .grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        /* Card Design */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 25px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: border 0.3s ease, transform 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--neon);
+            transform: translateY(-5px);
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            background: #1a1a1a;
+            padding: 3px 8px;
+            color: var(--neon);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .download-btn {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            color: var(--dark);
+            background: var(--neon);
+            padding: 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        .download-btn:hover {
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+        }
+
+        .empty-state {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 80px 0;
+            border: 1px dashed #222;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Study Repository</h1>
+        <div class="accent-line"></div>
+
+        <!-- Search Section -->
+        <div class="search-container">
+            <form method="GET" action="/library/" class="search-form">
+                <input type="text" name="search" placeholder="Search topics (e.g. SQL, Loops, Networking)..."
+                    value="{{ search_query|default:'' }}" class="search-input">
+                <button type="submit" class="search-btn">SEARCH</button>
+            </form>
+        </div>
+
+        <!-- Filter Bar -->
+        <nav class="filter-nav">
+            <a href="/library/" class="filter-link">ALL</a>
+            <a href="/library/?class_level=11" class="filter-link">CLASS 11</a>
+            <a href="/library/?class_level=12" class="filter-link">CLASS 12</a>
+            <a href="/library/?subject=CS" class="filter-link">CS</a>
+            <a href="/library/?subject=IP" class="filter-link">IP</a>
+        </nav>
+
+        {% if search_query %}
+        <div class="results-info">Showing results for: "{{ search_query }}"</div>
+        {% endif %}
+    </header>
+
+    <main class="grid">
+        {% for chapter in chapters %}
+        <div class="card">
+            <div class="card-meta">
+                <span class="badge">CLASS {{ chapter.class_level }}</span>
+                <span class="badge">{{ chapter.subject }}</span>
+            </div>
+            <div class="card-title">{{ chapter.title }}</div>
+            <a href="{{ chapter.notes_file.url }}" class="download-btn" target="_blank">OPEN RESOURCE</a>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <p style="color: #444;">Access Denied: No matching resources found.</p>
+            <a href="/library/" style="color: var(--neon); text-decoration: none;">Reset Search</a>
+        </div>
+        {% endfor %}
+    </main>
+
+    <script>
+        gsap.to(".card", {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power2.out"
+        });
+    </script>
+</body>
+
+</html>
